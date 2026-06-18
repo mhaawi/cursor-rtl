@@ -33,7 +33,7 @@
 
 ## Installation
 
-1. Download [`cursor-rtl-1.0.0.vsix`](https://github.com/malek-yaseen/cursor-rtl/releases/latest)
+1. Download [`cursor-rtl-1.0.0.vsix`](https://github.com/mhaawi/cursor-rtl/releases/latest)
 2. Cursor → **Extensions** (`Ctrl+Shift+X`) → `...` → **Install from VSIX...**
 3. Command Palette → **Cursor RTL: Enable**
 4. **Restart Cursor completely**
@@ -41,7 +41,7 @@
 ### Build from source
 
 ```bash
-git clone https://github.com/malek-yaseen/cursor-rtl.git
+git clone https://github.com/mhaawi/cursor-rtl.git
 cd cursor-rtl
 npm install
 npm run package

@@ -13,4 +13,4 @@ All notable changes to **Cursor RTL** are documented in this file.
 - Auto re-apply patch after Cursor updates
 - Safe backup of `main.js` before patching
 
-[1.0.0]: https://github.com/malek-yaseen/cursor-rtl/releases/tag/v1.0.0
+[1.0.0]: https://github.com/mhaawi/cursor-rtl/releases/tag/v1.0.0

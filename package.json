@@ -12,11 +12,11 @@
   "icon": "resources/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/malek-yaseen/cursor-rtl.git"
+    "url": "https://github.com/mhaawi/cursor-rtl.git"
   },
-  "homepage": "https://github.com/malek-yaseen/cursor-rtl#readme",
+  "homepage": "https://github.com/mhaawi/cursor-rtl#readme",
   "bugs": {
-    "url": "https://github.com/malek-yaseen/cursor-rtl/issues",
+    "url": "https://github.com/mhaawi/cursor-rtl/issues",
     "email": "malek.m.yaseen@gmail.com"
   },
   "engines": {
