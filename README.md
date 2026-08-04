@@ -1,44 +1,150 @@
 # Cursor RTL
 
 <p align="center">
-  <strong>عرض تلقائي للنصوص من اليمين لليسار في محادثة Cursor</strong><br>
-  <strong>Automatic right-to-left text display in Cursor chat</strong>
+  <img src="resources/icon.png" alt="Cursor RTL" width="96" height="96">
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.1.2-green.svg" alt="Version"></a>
+  <b>عرض تلقائي من اليمين لليسار في محادثات Cursor</b><br>
+  <b>Automatic right-to-left text for Cursor Agent, Composer &amp; Agents Window</b>
+</p>
+
+<p align="center">
+  <a href="https://github.com/mhaawi/cursor-rtl/releases/latest/download/cursor-rtl-1.1.2.vsix"><img src="https://img.shields.io/badge/⬇_Download_VSIX-1.1.2-0ea5e9?style=for-the-badge" alt="Download VSIX"></a>
+  <a href="https://github.com/mhaawi/cursor-rtl/releases/latest"><img src="https://img.shields.io/badge/Releases-Latest-22c55e?style=for-the-badge" alt="Releases"></a>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Version-1.1.2-green.svg" alt="Version"></a>
+  <img src="https://img.shields.io/badge/Cursor-Agent%20%7C%20Composer%20%7C%20Agents%20Window-7c3aed.svg" alt="Surfaces">
+  <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-64748b.svg" alt="Platform">
 </p>
 
 ---
 
-## Overview
+## رابط التحميل المباشر / Direct download
 
-**Cursor RTL** automatically detects RTL (right-to-left) text in Agent chat, Composer, and Cursor 3 Agents Window, and applies proper text direction — while keeping code blocks in LTR.
+**أحدث إصدار:**
 
-## Features
+> **[⬇ تحميل cursor-rtl-1.1.2.vsix](https://github.com/mhaawi/cursor-rtl/releases/latest/download/cursor-rtl-1.1.2.vsix)**
 
-- Automatic RTL detection per message element
-- Mixed RTL + LTR content in the same conversation
-- Code blocks always stay LTR
-- Status bar indicator (`✓ RTL`)
-- Auto re-apply after Cursor updates
-- Safe backup before modifying Cursor files
+صفحة الإصدارات: [Releases](https://github.com/mhaawi/cursor-rtl/releases/latest)
 
-## Requirements
+---
 
-- **Cursor IDE** (not VS Code)
-- Windows, macOS, or Linux
-- Administrator privileges may be required on Windows during first enable
+## ماذا تفعل الإضافة؟ / What it does
 
-## Installation
+Cursor RTL يكتشف تلقائياً النصوص العربية/العبرية وغيرها من لغات RTL داخل:
 
-1. Download [`cursor-rtl-1.1.2.vsix`](https://github.com/mhaawi/cursor-rtl/releases/latest)
-2. Cursor → **Extensions** (`Ctrl+Shift+X`) → `...` → **Install from VSIX...**
-3. Command Palette → **Cursor RTL: Enable**
-4. **Restart Cursor completely**
+| الوضع / Mode | الدعم |
+|---|---|
+| Agent (IDE) | ✅ |
+| Composer | ✅ |
+| Agents Window (Cursor 3 / Glass) | ✅ |
 
-### Build from source
+ويضبط اتجاه الفقرة بشكل صحيح مع الإبقاء على **كتل الكود LTR**.
+
+يدعم أيضاً النصوص المختلطة مثل:
+
+`استخدم React 18 و Node.js في المشروع`  
+`API يعيد status=200 عند النجاح`  
+`user@example.com تم الإرسال`
+
+---
+
+## التثبيت خطوة بخطوة / Install
+
+### 1) حمّل ملف VSIX
+من الرابط المباشر أعلاه:  
+[cursor-rtl-1.1.2.vsix](https://github.com/mhaawi/cursor-rtl/releases/latest/download/cursor-rtl-1.1.2.vsix)
+
+### 2) ثبّته داخل Cursor
+1. افتح Cursor
+2. اذهب إلى **Extensions** (`Ctrl+Shift+X` / `Cmd+Shift+X`)
+3. اضغط `...` أعلى قائمة الإضافات
+4. اختر **Install from VSIX...**
+5. اختر ملف `cursor-rtl-1.1.2.vsix`
+
+### 3) فعّل الدعم (مهم جداً)
+تثبيت الإضافة وحده لا يكفي.
+
+1. افتح **Command Palette**  
+   - Windows/Linux: `Ctrl+Shift+P`  
+   - macOS: `Cmd+Shift+P`
+2. نفّذ: **`Cursor RTL: Enable`** (أو **تفعيل**)
+3. وافق على رسالة التأكيد
+4. **أغلق Cursor بالكامل** (كل النوافذ بما فيها Agents Window) ثم افتحه من جديد
+
+### 4) تحقق من الحالة
+في شريط الحالة أسفل Cursor يجب أن ترى:
+
+| المؤشر | المعنى |
+|---|---|
+| `✓ RTL` | مفعّل ويعمل |
+| `⊘ RTL` | غير مفعّل — نفّذ Enable |
+| `⚠ RTL` | يحتاج إعادة تطبيق بعد تحديث Cursor |
+
+---
+
+## الاستخدام / Usage
+
+بعد التفعيل وإعادة التشغيل:
+
+1. افتح **Agent** أو **Composer** أو **Agents Window**
+2. اكتب بالعربية (أو أي لغة RTL)، حتى مع كلمات إنجليزية وأرقام ورموز
+3. الاتجاه يُضبط تلقائياً لكل فقرة
+4. الكود يبقى من اليسار لليمين
+
+> إذا حدّثت Cursor واختفى RTL: نفّذ **`Cursor RTL: Re-apply After Update`** ثم أعد التشغيل.
+
+---
+
+## الأوامر / Commands
+
+| الأمر | الوظيفة |
+|---|---|
+| `Cursor RTL: Enable` | تفعيل وحقن الدعم في ملفات Cursor |
+| `Cursor RTL: Disable` | إيقاف واستعادة الملفات الأصلية |
+| `Cursor RTL: Status` | عرض الحالة الحالية |
+| `Cursor RTL: Re-apply After Update` | إعادة التطبيق بعد تحديث Cursor |
+
+---
+
+## الإعدادات / Settings
+
+| الإعداد | الافتراضي | الوصف |
+|---|---|---|
+| `cursorRtl.autoReapply` | `true` | إعادة تطبيق تلقائية بعد تحديث Cursor |
+| `cursorRtl.showStatusBar` | `true` | إظهار مؤشر الحالة |
+
+---
+
+## المتطلبات / Requirements
+
+- **Cursor IDE** (ليست VS Code)
+- Windows / macOS / Linux
+- قد تحتاج صلاحيات مسؤول (Administrator) على Windows عند أول تفعيل
+
+---
+
+## استكشاف الأخطاء / Troubleshooting
+
+**Permission denied (Windows)**  
+شغّل Cursor كـ Administrator ثم نفّذ **Enable** مرة أخرى.
+
+**RTL توقف بعد تحديث Cursor**  
+نفّذ **Re-apply After Update** ثم أعد التشغيل بالكامل.
+
+**يعمل في Agent ولا يعمل في Agents Window**  
+تأكد أنك أعدت تشغيل Cursor بالكامل بعد Enable/Re-apply، وليس Reload Window فقط.
+
+**قبل إلغاء التثبيت**  
+نفّذ **Disable** أولاً، ثم أعد التشغيل، ثم احذف الإضافة.
+
+---
+
+## البناء من المصدر / Build from source
 
 ```bash
 git clone https://github.com/mhaawi/cursor-rtl.git
@@ -47,72 +153,31 @@ npm install
 npm run package
 ```
 
-## Usage
+سيُنشأ ملف `cursor-rtl-*.vsix` جاهز للتثبيت.
 
-After enabling and restarting:
-
-1. Open Agent chat, Composer, or Agents Window
-2. Write in any RTL language
-3. Text automatically aligns right-to-left
-
-### Status Bar
-
-| Indicator | Meaning |
-|-----------|---------|
-| `✓ RTL` | Active |
-| `⊘ RTL` | Not enabled |
-| `⚠ RTL` | Re-apply needed after Cursor update |
-
-## Commands
-
-| Command | Description |
-|---------|-------------|
-| `Cursor RTL: Enable` | Apply RTL patch |
-| `Cursor RTL: Disable` | Restore original files |
-| `Cursor RTL: Status` | Check current state |
-| `Cursor RTL: Re-apply After Update` | Re-apply after Cursor update |
-
-## Settings
-
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `cursorRtl.autoReapply` | `true` | Auto re-apply after Cursor updates |
-| `cursorRtl.showStatusBar` | `true` | Show status bar indicator |
-
-## How It Works
-
-1. Creates a backup of Cursor's `main.js`
-2. Injects a one-line loader into `main.js`
-3. Loader injects `rtl.js` into the workbench on startup
-4. `rtl.js` scans chat DOM and sets `dir="rtl"` or `dir="ltr"` per element
-
-> **Note:** This extension modifies Cursor application files. Use **Disable** before uninstalling.
-
-## Troubleshooting
-
-**Permission denied (Windows)** — Run Cursor as Administrator, then **Enable** again.
-
-**RTL stopped after Cursor update** — Run **Re-apply After Update**, or enable `cursorRtl.autoReapply`.
-
-## Uninstall
-
-1. **Cursor RTL: Disable**
-2. Restart Cursor
-3. Uninstall from Extensions panel
-
-## Development
+اختبار اتجاه النصوص المختلطة:
 
 ```bash
-npm install
-npm run watch
-npm run lint
-npm run package
+npm run test:direction
 ```
 
-## Author
+---
+
+## كيف تعمل؟ / How it works
+
+1. تنشئ نسخة احتياطية من `main.js` في Cursor
+2. تحقن loader بسيط في `main.js`
+3. عند التشغيل يُحقن `rtl.js` في واجهة العمل (بما فيها Agents Window)
+4. يُمسح DOM وتُضبط `dir="rtl"` أو `dir="ltr"` حسب محتوى كل عنصر
+
+> **ملاحظة:** الإضافة تعدّل ملفات تطبيق Cursor. استخدم **Disable** قبل الإزالة.
+
+---
+
+## المؤلف / Author
 
 **Malek Yaseen** — [malek.m.yaseen@gmail.com](mailto:malek.m.yaseen@gmail.com)
 
-## License
+## الرخصة / License
 
 [MIT](LICENSE) — Copyright (c) 2026 Malek Yaseen
