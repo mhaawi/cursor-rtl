@@ -2,6 +2,15 @@
 
 All notable changes to **Cursor RTL** are documented in this file.
 
+## [1.1.2] - 2026-08-04
+
+### Improved
+
+- Smarter mixed-direction detection (Arabic + English + numbers + symbols) using first-strong character with technical-token downweighting
+- Cleaner CSS for mixed RTL paragraphs: plaintext bidi, isolated LTR islands for links/code/mentions
+- Broader Agents Window (Glass) selectors without over-applying `dir` on layout wrappers
+- Unit tests for direction scoring (`npm run test:direction`)
+
 ## [1.1.1] - 2026-08-04
 
 ### Fixed

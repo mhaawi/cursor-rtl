@@ -10,6 +10,12 @@
     function log() {
         var args = Array.prototype.slice.call(arguments);
         console.warn.apply(console, [LOG].concat(args));
+        try {
+            var line = new Date().toISOString() + ' ' + args.map(function (a) {
+                return typeof a === 'string' ? a : (a && a.message) || String(a);
+            }).join(' ');
+            fs.appendFileSync(path.join(os.homedir(), '.cursor', 'cursor-rtl-loader.log'), line + '\n');
+        } catch (e) {}
     }
 
     var electron;

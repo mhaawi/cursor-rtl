@@ -2,7 +2,7 @@
   "name": "cursor-rtl",
   "displayName": "Cursor RTL",
   "description": "عرض تلقائي للنصوص RTL في محادثة Cursor — Automatic RTL text direction in Cursor chat, Agent, Composer, and Agents Window.",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "publisher": "malek-yaseen",
   "author": {
     "name": "Malek Yaseen",
@@ -80,6 +80,7 @@
     "package": "npm run build && vsce package --no-dependencies",
     "publish:openvsx": "npm run package && ovsx publish cursor-rtl-*.vsix",
     "lint": "tsc --noEmit",
+    "test:direction": "node scripts/test-direction.js",
     "vscode:uninstall": "node dist/uninstall.js"
   },
   "devDependencies": {
