@@ -7,14 +7,14 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.0.0-green.svg" alt="Version"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.1.0-green.svg" alt="Version"></a>
 </p>
 
 ---
 
 ## Overview
 
-**Cursor RTL** automatically detects RTL (right-to-left) text in Agent chat and Composer, and applies proper text direction — while keeping code blocks in LTR.
+**Cursor RTL** automatically detects RTL (right-to-left) text in Agent chat, Composer, and Cursor 3 Agents Window, and applies proper text direction — while keeping code blocks in LTR.
 
 ## Features
 
@@ -33,7 +33,7 @@
 
 ## Installation
 
-1. Download [`cursor-rtl-1.0.0.vsix`](https://github.com/mhaawi/cursor-rtl/releases/latest)
+1. Download [`cursor-rtl-1.1.0.vsix`](https://github.com/mhaawi/cursor-rtl/releases/latest)
 2. Cursor → **Extensions** (`Ctrl+Shift+X`) → `...` → **Install from VSIX...**
 3. Command Palette → **Cursor RTL: Enable**
 4. **Restart Cursor completely**
@@ -51,7 +51,7 @@ npm run package
 
 After enabling and restarting:
 
-1. Open Agent chat or Composer
+1. Open Agent chat, Composer, or Agents Window
 2. Write in any RTL language
 3. Text automatically aligns right-to-left
 

@@ -27,7 +27,8 @@
         '.composer-rendered-message .composer-human-message div:has(> div > .aislash-editor-input-readonly),',
         '.composer-rendered-message .composer-human-message div:has(> div > .aislash-editor-input) {',
         '  flex-grow: 1 !important; }',
-        '.markdown-root ul, .markdown-root ol, .markdown-lexical-editor-container ul, .markdown-lexical-editor-container ol {',
+        '.markdown-root ul, .markdown-root ol, .markdown-lexical-editor-container ul, .markdown-lexical-editor-container ol,',
+        '.markdown-lexical-editor-list-ul, .markdown-lexical-editor-list-ol {',
         '  padding-inline-start: 20px !important; padding-inline-end: 0 !important; }',
         '.markdown-root strong, .markdown-root em, .markdown-lexical-editor-container strong, .markdown-lexical-editor-container em {',
         '  unicode-bidi: isolate !important; }',
@@ -40,12 +41,23 @@
         '.markdown-lexical-editor-container h1, .markdown-lexical-editor-container h2,',
         '.markdown-lexical-editor-container h3, .markdown-lexical-editor-container h4,',
         '.markdown-lexical-editor-container h5, .markdown-lexical-editor-container h6,',
-        '.markdown-lexical-editor-container blockquote {',
+        '.markdown-lexical-editor-container blockquote,',
+        '.markdown-lexical-editor-paragraph, .markdown-lexical-editor-listitem,',
+        '.markdown-lexical-editor-listitem-checked, .markdown-lexical-editor-listitem-unchecked,',
+        '.markdown-lexical-editor-h1, .markdown-lexical-editor-h2, .markdown-lexical-editor-h3,',
+        '.markdown-lexical-editor-h4, .markdown-lexical-editor-h5, .markdown-lexical-editor-h6,',
+        '.markdown-lexical-editor-list-ul, .markdown-lexical-editor-list-ol {',
         '  unicode-bidi: plaintext !important; text-align: start !important; }',
         '.markdown-root p[dir="rtl"], .markdown-root li[dir="rtl"], .markdown-root h1[dir="rtl"],',
         '.markdown-root h2[dir="rtl"], .markdown-root h3[dir="rtl"], .markdown-root h4[dir="rtl"],',
         '.markdown-root h5[dir="rtl"], .markdown-root h6[dir="rtl"], .markdown-root blockquote[dir="rtl"],',
         '.markdown-lexical-editor-container p[dir="rtl"], .markdown-lexical-editor-container li[dir="rtl"],',
+        '.markdown-lexical-editor-paragraph[dir="rtl"], .markdown-lexical-editor-listitem[dir="rtl"],',
+        '.markdown-lexical-editor-listitem-checked[dir="rtl"], .markdown-lexical-editor-listitem-unchecked[dir="rtl"],',
+        '.markdown-lexical-editor-h1[dir="rtl"], .markdown-lexical-editor-h2[dir="rtl"],',
+        '.markdown-lexical-editor-h3[dir="rtl"], .markdown-lexical-editor-h4[dir="rtl"],',
+        '.markdown-lexical-editor-h5[dir="rtl"], .markdown-lexical-editor-h6[dir="rtl"],',
+        '.markdown-lexical-editor-list-ul[dir="rtl"], .markdown-lexical-editor-list-ol[dir="rtl"],',
         '.composer-human-message p[dir="rtl"], .composer-human-message div[dir="rtl"],',
         '.aislash-editor-input p[dir="rtl"], .aislash-editor-input-readonly p[dir="rtl"],',
         '.ui-prompt-input-editor__input[dir="rtl"], .ui-prompt-input-editor__input > p[dir="rtl"] {',
@@ -68,6 +80,13 @@
         '.markdown-lexical-editor-container blockquote', '.markdown-lexical-editor-container ul',
         '.markdown-lexical-editor-container ol', '.markdown-lexical-editor-container table th',
         '.markdown-lexical-editor-container table td',
+        '.markdown-lexical-editor-paragraph',
+        '.markdown-lexical-editor-listitem',
+        '.markdown-lexical-editor-listitem-checked',
+        '.markdown-lexical-editor-listitem-unchecked',
+        '.markdown-lexical-editor-h1', '.markdown-lexical-editor-h2', '.markdown-lexical-editor-h3',
+        '.markdown-lexical-editor-h4', '.markdown-lexical-editor-h5', '.markdown-lexical-editor-h6',
+        '.markdown-lexical-editor-list-ul', '.markdown-lexical-editor-list-ol',
         '.composer-human-message p', '.composer-human-message div',
         '.aislash-editor-input p', '.aislash-editor-input-readonly p',
         '.ui-prompt-input-editor__input', '.ui-prompt-input-editor__input > p',
@@ -121,7 +140,11 @@
     }
 
     function getListDir(el) {
-        var items = el.querySelectorAll(':scope > li');
+        var items = el.querySelectorAll(
+            ':scope > li, :scope > .markdown-lexical-editor-listitem, ' +
+            ':scope > .markdown-lexical-editor-listitem-checked, ' +
+            ':scope > .markdown-lexical-editor-listitem-unchecked'
+        );
         if (items.length === 0) return getTextDir(getElementText(el));
         var rtl = 0, ltr = 0;
         for (var i = 0; i < items.length; i++) {
@@ -143,7 +166,9 @@
     }
 
     function getDesiredDir(el) {
-        if (el.matches && el.matches('ol, ul')) return getListDir(el);
+        if (el.matches && el.matches('ol, ul, .markdown-lexical-editor-list-ul, .markdown-lexical-editor-list-ol')) {
+            return getListDir(el);
+        }
         if (el.matches && el.matches('table')) return getTableDir(el);
         return getTextDir(getElementText(el));
     }

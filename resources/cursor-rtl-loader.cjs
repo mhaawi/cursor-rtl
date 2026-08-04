@@ -104,31 +104,40 @@
             });
     }
 
-    function setupWindow(win) {
-        if (!win || !win.webContents) return;
-        var wc = win.webContents;
-        var id = win.id;
+    function setupWebContents(wc, labelId) {
+        if (!wc || wc.isDestroyed()) return;
+        if (wc.__cursorRtlHooked) return;
+        wc.__cursorRtlHooked = true;
 
         wc.on('did-start-loading', function () {
             wc.__cursorRtlInjectedUrl = '';
         });
         wc.on('did-finish-load', function () {
-            inject(wc, 'inject[' + id + ']');
+            inject(wc, 'inject[' + labelId + ']');
         });
 
         [250, 1000].forEach(function (delay) {
             setTimeout(function () {
-                if (!wc.isDestroyed()) inject(wc, 'fallback[' + id + '@' + delay + 'ms]');
+                if (!wc.isDestroyed()) inject(wc, 'fallback[' + labelId + '@' + delay + 'ms]');
             }, delay);
         });
 
         if (!wc.isLoading() && !wc.isDestroyed()) {
-            inject(wc, 'inject-now[' + id + ']');
+            inject(wc, 'inject-now[' + labelId + ']');
         }
+    }
+
+    function setupWindow(win) {
+        if (!win || !win.webContents) return;
+        setupWebContents(win.webContents, win.id);
     }
 
     electron.app.on('browser-window-created', function (_ev, win) {
         setupWindow(win);
+    });
+
+    electron.app.on('web-contents-created', function (_ev, wc) {
+        setupWebContents(wc, wc.id);
     });
 
     try {
