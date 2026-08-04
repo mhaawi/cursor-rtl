@@ -2,6 +2,14 @@
 
 All notable changes to **Cursor RTL** are documented in this file.
 
+## [1.1.0] - 2026-08-04
+
+### Added
+
+- RTL support for Cursor 3 Agents Window (Glass workspace UI)
+- Injection coverage via Electron `web-contents-created`
+- Lexical editor class selectors used by Agents Window chat
+
 ## [1.0.0] - 2026-06-19
 
 ### Added
@@ -13,4 +21,5 @@ All notable changes to **Cursor RTL** are documented in this file.
 - Auto re-apply patch after Cursor updates
 - Safe backup of `main.js` before patching
 
+[1.1.0]: https://github.com/mhaawi/cursor-rtl/releases/tag/v1.1.0
 [1.0.0]: https://github.com/mhaawi/cursor-rtl/releases/tag/v1.0.0
