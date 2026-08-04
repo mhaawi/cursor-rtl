@@ -2,7 +2,7 @@
   "name": "cursor-rtl",
   "displayName": "Cursor RTL",
   "description": "عرض تلقائي للنصوص RTL في محادثة Cursor — Automatic RTL text direction in Cursor chat, Agent, Composer, and Agents Window.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "publisher": "malek-yaseen",
   "author": {
     "name": "Malek Yaseen",

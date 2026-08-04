@@ -4,6 +4,7 @@ import {
     PATCH_LINE,
     PATCH_MARKER,
     LOADER_FILENAME,
+    RTL_SCRIPT_FILENAME,
     BACKUP_PREFIX,
 } from './constants';
 
@@ -132,19 +133,27 @@ export function removePatch(mainJsPath: string): void {
 }
 
 export function copyLoader(outDir: string, extensionPath: string): void {
-    const src = path.join(extensionPath, 'resources', LOADER_FILENAME);
-    const dest = path.join(outDir, LOADER_FILENAME);
-    fs.copyFileSync(src, dest);
+    const loaderSrc = path.join(extensionPath, 'resources', LOADER_FILENAME);
+    const loaderDest = path.join(outDir, LOADER_FILENAME);
+    fs.copyFileSync(loaderSrc, loaderDest);
+
+    // Keep a local copy next to main.js so Agents Window injection
+    // does not depend on resolving the extensions directory at runtime.
+    const rtlSrc = path.join(extensionPath, 'resources', 'rtl.js');
+    const rtlDest = path.join(outDir, RTL_SCRIPT_FILENAME);
+    fs.copyFileSync(rtlSrc, rtlDest);
 }
 
 export function removeLoader(outDir: string): void {
-    const loaderPath = path.join(outDir, LOADER_FILENAME);
-    try {
-        if (fs.existsSync(loaderPath)) {
-            fs.unlinkSync(loaderPath);
+    for (const name of [LOADER_FILENAME, RTL_SCRIPT_FILENAME]) {
+        const filePath = path.join(outDir, name);
+        try {
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        } catch {
+            // best-effort
         }
-    } catch {
-        // best-effort
     }
 }
 
@@ -173,7 +182,12 @@ export function getDryRunSummary(mainJsPath: string): string[] {
             ? `Update loader script: ${loaderDest}`
             : `Write loader script: ${loaderDest}`
     );
-    actions.push('RTL script stays in extension directory (updates with extension)');
+    const rtlDest = path.join(dir, RTL_SCRIPT_FILENAME);
+    actions.push(
+        fs.existsSync(rtlDest)
+            ? `Update RTL script: ${rtlDest}`
+            : `Write RTL script: ${rtlDest}`
+    );
 
     return actions;
 }

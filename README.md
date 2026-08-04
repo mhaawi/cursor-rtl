@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.1.0-green.svg" alt="Version"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.1.1-green.svg" alt="Version"></a>
 </p>
 
 ---
@@ -33,7 +33,7 @@
 
 ## Installation
 
-1. Download [`cursor-rtl-1.1.0.vsix`](https://github.com/mhaawi/cursor-rtl/releases/latest)
+1. Download [`cursor-rtl-1.1.1.vsix`](https://github.com/mhaawi/cursor-rtl/releases/latest)
 2. Cursor → **Extensions** (`Ctrl+Shift+X`) → `...` → **Install from VSIX...**
 3. Command Palette → **Cursor RTL: Enable**
 4. **Restart Cursor completely**

@@ -87,11 +87,15 @@
         '.markdown-lexical-editor-h1', '.markdown-lexical-editor-h2', '.markdown-lexical-editor-h3',
         '.markdown-lexical-editor-h4', '.markdown-lexical-editor-h5', '.markdown-lexical-editor-h6',
         '.markdown-lexical-editor-list-ul', '.markdown-lexical-editor-list-ol',
+        '.markdown-lexical-editor-content-editable',
+        '.markdown-lexical-editor-root',
         '.composer-human-message p', '.composer-human-message div',
         '.aislash-editor-input p', '.aislash-editor-input-readonly p',
         '.ui-prompt-input-editor__input', '.ui-prompt-input-editor__input > p',
         '.ui-prompt-input-tiptap-readonly__content', '.ui-prompt-input-tiptap-readonly__content > p',
-        '.composer-rendered-message table th', '.composer-rendered-message table td'
+        '.composer-rendered-message table th', '.composer-rendered-message table td',
+        '[class*="glass-chat"] [class*="markdown-lexical-editor"]',
+        '[class*="glass-chat"] p', '[class*="glass-chat"] li'
     ].join(', ');
 
     var CODE_EXCLUDE = 'code, pre, .markdown-code-outer-container, .cursor-code-block-content, .markdown-lexical-editor-code-block';

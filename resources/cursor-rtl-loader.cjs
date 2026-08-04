@@ -5,6 +5,7 @@
 
     var LOG = '[Cursor RTL Loader]';
     var EXT_PREFIX = /^malek-yaseen\.cursor-rtl-\d/;
+    var LOCAL_RTL = 'cursor-rtl.js';
 
     function log() {
         var args = Array.prototype.slice.call(arguments);
@@ -20,6 +21,11 @@
     }
 
     function findRtlScript() {
+        try {
+            var localPath = path.join(__dirname, LOCAL_RTL);
+            if (fs.existsSync(localPath)) return localPath;
+        } catch (e) {}
+
         var extDir = '';
         for (var i = 0; i < process.argv.length; i++) {
             if (process.argv[i] === '--extensions-dir' && process.argv[i + 1]) {
@@ -42,8 +48,8 @@
                 .sort();
             if (dirs.length === 0) return '';
 
-            for (var i = dirs.length - 1; i >= 0; i--) {
-                var rtlPath = path.join(extDir, dirs[i], 'resources', 'rtl.js');
+            for (var j = dirs.length - 1; j >= 0; j--) {
+                var rtlPath = path.join(extDir, dirs[j], 'resources', 'rtl.js');
                 if (fs.existsSync(rtlPath)) return rtlPath;
             }
             return '';
@@ -54,7 +60,11 @@
     }
 
     function isWorkbenchUrl(url) {
-        return typeof url === 'string' && url.indexOf('workbench.html') !== -1;
+        if (typeof url !== 'string' || !url) return false;
+        return (
+            url.indexOf('workbench.html') !== -1 ||
+            url.indexOf('workbench-dev.html') !== -1
+        );
     }
 
     function isRuntimeAlive(wc) {
@@ -67,7 +77,13 @@
 
         var url = '';
         try { url = wc.getURL(); } catch (e) { return; }
-        if (!isWorkbenchUrl(url)) return;
+        if (!isWorkbenchUrl(url)) {
+            if (url && !wc.__cursorRtlSkipLogged) {
+                wc.__cursorRtlSkipLogged = true;
+                log(label, 'skip non-workbench url:', String(url).slice(0, 160));
+            }
+            return;
+        }
 
         if (wc.__cursorRtlInjectedUrl === url) {
             isRuntimeAlive(wc).then(function (alive) {
@@ -95,7 +111,7 @@
             .then(function (alive) {
                 wc.__cursorRtlInjecting = false;
                 wc.__cursorRtlInjectedUrl = alive ? url : '';
-                log(label, alive ? 'injected OK' : 'injection unverified');
+                log(label, alive ? 'injected OK' : 'injection unverified', String(url).slice(0, 120));
             })
             .catch(function (err) {
                 wc.__cursorRtlInjecting = false;
@@ -115,8 +131,11 @@
         wc.on('did-finish-load', function () {
             inject(wc, 'inject[' + labelId + ']');
         });
+        wc.on('did-navigate-in-page', function () {
+            inject(wc, 'nav[' + labelId + ']');
+        });
 
-        [250, 1000].forEach(function (delay) {
+        [250, 1000, 3000, 8000].forEach(function (delay) {
             setTimeout(function () {
                 if (!wc.isDestroyed()) inject(wc, 'fallback[' + labelId + '@' + delay + 'ms]');
             }, delay);
@@ -132,6 +151,18 @@
         setupWebContents(win.webContents, win.id);
     }
 
+    function sweepAllWebContents(reason) {
+        try {
+            if (!electron.webContents || !electron.webContents.getAllWebContents) return;
+            electron.webContents.getAllWebContents().forEach(function (wc) {
+                setupWebContents(wc, reason + ':' + wc.id);
+                inject(wc, 'sweep[' + reason + ':' + wc.id + ']');
+            });
+        } catch (e) {
+            log('sweep error:', e.message);
+        }
+    }
+
     electron.app.on('browser-window-created', function (_ev, win) {
         setupWindow(win);
     });
@@ -140,10 +171,22 @@
         setupWebContents(wc, wc.id);
     });
 
-    try {
-        electron.BrowserWindow.getAllWindows().forEach(setupWindow);
-    } catch (e) {
-        log('getAllWindows error:', e.message);
+    function onReady() {
+        try {
+            electron.BrowserWindow.getAllWindows().forEach(setupWindow);
+        } catch (e) {
+            log('getAllWindows error:', e.message);
+        }
+        sweepAllWebContents('ready');
+        [2000, 5000, 12000].forEach(function (delay) {
+            setTimeout(function () { sweepAllWebContents('t' + delay); }, delay);
+        });
+    }
+
+    if (electron.app.isReady()) {
+        onReady();
+    } else {
+        electron.app.once('ready', onReady);
     }
 
     log('loader ready');

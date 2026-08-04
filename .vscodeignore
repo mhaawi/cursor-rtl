@@ -7,4 +7,5 @@ node_modules/**
 tsconfig.json
 esbuild.js
 .gitignore
+scripts/**
 *.vsix

@@ -2,6 +2,13 @@
 
 All notable changes to **Cursor RTL** are documented in this file.
 
+## [1.1.1] - 2026-08-04
+
+### Fixed
+
+- Ensure Enable/Re-apply copies `rtl.js` beside Cursor `main.js` so Agents Window injection does not depend on extension path lookup
+- Harden loader: `webContents` sweep, longer fallbacks, and clearer injection logs for Glass/Agents Window
+
 ## [1.1.0] - 2026-08-04
 
 ### Added
