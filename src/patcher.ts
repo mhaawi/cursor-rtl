@@ -1,0 +1,207 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import {
+    PATCH_LINE,
+    PATCH_MARKER,
+    LOADER_FILENAME,
+    RTL_SCRIPT_FILENAME,
+    BACKUP_PREFIX,
+} from './constants';
+
+export function isPatched(mainJsPath: string): boolean {
+    try {
+        const content = fs.readFileSync(mainJsPath, 'utf-8');
+        return content.includes(PATCH_LINE) || content.includes(PATCH_MARKER);
+    } catch {
+        return false;
+    }
+}
+
+function stripPatchLines(content: string): string {
+    return content
+        .split('\n')
+        .filter((line) => !line.includes(PATCH_MARKER))
+        .join('\n');
+}
+
+function formatTimestamp(): string {
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return (
+        now.getFullYear().toString() +
+        pad(now.getMonth() + 1) +
+        pad(now.getDate()) +
+        'T' +
+        pad(now.getHours()) +
+        pad(now.getMinutes()) +
+        pad(now.getSeconds())
+    );
+}
+
+export function backup(mainJsPath: string): string {
+    const dir = path.dirname(mainJsPath);
+    const backupPath = path.join(dir, BACKUP_PREFIX + formatTimestamp());
+    fs.copyFileSync(mainJsPath, backupPath);
+    return backupPath;
+}
+
+function findLatestBackup(mainJsDir: string): string | null {
+    try {
+        const backups = fs
+            .readdirSync(mainJsDir)
+            .filter((f) => f.startsWith(BACKUP_PREFIX))
+            .sort()
+            .reverse();
+        return backups.length > 0 ? path.join(mainJsDir, backups[0]) : null;
+    } catch {
+        return null;
+    }
+}
+
+export function hasBackups(mainJsPath: string): boolean {
+    return findLatestBackup(path.dirname(mainJsPath)) !== null;
+}
+
+export function applyPatch(mainJsPath: string): void {
+    const content = fs.readFileSync(mainJsPath, 'utf-8');
+
+    if (!content.includes('Copyright (C) Microsoft Corporation')) {
+        throw new Error(
+            'main.js does not contain the expected Microsoft copyright signature. ' +
+                'This file may be corrupted or from an unsupported Cursor version.'
+        );
+    }
+
+    if (content.includes(PATCH_LINE)) {
+        return;
+    }
+
+    const backupPath = backup(mainJsPath);
+
+    try {
+        const lines = content.split('\n');
+        const existingIndex = lines.findIndex((line) =>
+            line.startsWith('import{createRequire')
+        );
+
+        if (existingIndex !== -1) {
+            lines[existingIndex] = PATCH_LINE;
+            fs.writeFileSync(mainJsPath, lines.join('\n'), 'utf-8');
+        } else {
+            const copyrightEnd = content.indexOf('*/');
+            if (copyrightEnd === -1) {
+                throw new Error('Could not find end of copyright comment in main.js');
+            }
+
+            const insertPos = copyrightEnd + 2;
+            const patched =
+                content.substring(0, insertPos) +
+                '\n' +
+                PATCH_LINE +
+                content.substring(insertPos);
+
+            fs.writeFileSync(mainJsPath, patched, 'utf-8');
+        }
+    } catch (err) {
+        try {
+            fs.copyFileSync(backupPath, mainJsPath);
+        } catch (rollbackErr) {
+            throw new Error(
+                `Patch failed and rollback also failed. Backup is at: ${backupPath}. ` +
+                    `Original error: ${err}. Rollback error: ${rollbackErr}`
+            );
+        }
+        throw err;
+    }
+}
+
+export function removePatch(mainJsPath: string): void {
+    const dir = path.dirname(mainJsPath);
+    const latestBackup = findLatestBackup(dir);
+
+    if (latestBackup) {
+        fs.copyFileSync(latestBackup, mainJsPath);
+    } else {
+        const content = fs.readFileSync(mainJsPath, 'utf-8');
+        if (!content.includes(PATCH_MARKER)) {
+            return;
+        }
+        fs.writeFileSync(mainJsPath, stripPatchLines(content), 'utf-8');
+    }
+
+    removeLoader(dir);
+}
+
+export function copyLoader(outDir: string, extensionPath: string): void {
+    const loaderSrc = path.join(extensionPath, 'resources', LOADER_FILENAME);
+    const loaderDest = path.join(outDir, LOADER_FILENAME);
+    fs.copyFileSync(loaderSrc, loaderDest);
+
+    // Keep a local copy next to main.js so Agents Window injection
+    // does not depend on resolving the extensions directory at runtime.
+    const rtlSrc = path.join(extensionPath, 'resources', 'rtl.js');
+    const rtlDest = path.join(outDir, RTL_SCRIPT_FILENAME);
+    fs.copyFileSync(rtlSrc, rtlDest);
+}
+
+export function removeLoader(outDir: string): void {
+    for (const name of [LOADER_FILENAME, RTL_SCRIPT_FILENAME]) {
+        const filePath = path.join(outDir, name);
+        try {
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        } catch {
+            // best-effort
+        }
+    }
+}
+
+export function getDryRunSummary(mainJsPath: string): string[] {
+    const actions: string[] = [];
+    const dir = path.dirname(mainJsPath);
+
+    if (isPatched(mainJsPath)) {
+        actions.push('RTL patch is already applied in main.js');
+    } else {
+        const content = fs.readFileSync(mainJsPath, 'utf-8');
+        const hasExisting = content
+            .split('\n')
+            .some((l) => l.startsWith('import{createRequire'));
+        actions.push(`Backup main.js → ${BACKUP_PREFIX}<timestamp>`);
+        if (hasExisting) {
+            actions.push('Replace existing createRequire import with RTL loader');
+        } else {
+            actions.push('Insert RTL loader require into main.js');
+        }
+    }
+
+    const loaderDest = path.join(dir, LOADER_FILENAME);
+    actions.push(
+        fs.existsSync(loaderDest)
+            ? `Update loader script: ${loaderDest}`
+            : `Write loader script: ${loaderDest}`
+    );
+    const rtlDest = path.join(dir, RTL_SCRIPT_FILENAME);
+    actions.push(
+        fs.existsSync(rtlDest)
+            ? `Update RTL script: ${rtlDest}`
+            : `Write RTL script: ${rtlDest}`
+    );
+
+    return actions;
+}
+
+export function handlePermissionError(err: unknown): string {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === 'EPERM' || code === 'EACCES') {
+        if (process.platform === 'win32') {
+            return 'Permission denied. Try running Cursor as Administrator.';
+        }
+        if (process.platform === 'darwin') {
+            return 'Permission denied. Try: sudo chown -R $USER Cursor.app/Contents/Resources/app/out/';
+        }
+        return 'Permission denied. Try running Cursor with elevated privileges.';
+    }
+    return `Unexpected error: ${err}`;
+}

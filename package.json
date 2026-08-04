@@ -1,0 +1,94 @@
+{
+  "name": "cursor-rtl",
+  "displayName": "Cursor RTL",
+  "description": "عرض تلقائي للنصوص RTL في محادثة Cursor — Automatic RTL text direction in Cursor chat, Agent, Composer, and Agents Window.",
+  "version": "1.0.0",
+  "publisher": "malek-yaseen",
+  "author": {
+    "name": "Malek Yaseen",
+    "email": "malek.m.yaseen@gmail.com"
+  },
+  "license": "MIT",
+  "icon": "resources/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mhaawi/cursor-rtl.git"
+  },
+  "homepage": "https://github.com/mhaawi/cursor-rtl#readme",
+  "bugs": {
+    "url": "https://github.com/mhaawi/cursor-rtl/issues",
+    "email": "malek.m.yaseen@gmail.com"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "rtl",
+    "right-to-left",
+    "cursor",
+    "chat",
+    "agent",
+    "composer",
+    "bidi"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "cursorRtl.enable",
+        "title": "Cursor RTL: تفعيل / Enable"
+      },
+      {
+        "command": "cursorRtl.disable",
+        "title": "Cursor RTL: إيقاف / Disable"
+      },
+      {
+        "command": "cursorRtl.status",
+        "title": "Cursor RTL: الحالة / Status"
+      },
+      {
+        "command": "cursorRtl.reapply",
+        "title": "Cursor RTL: إعادة التطبيق / Re-apply After Update"
+      }
+    ],
+    "configuration": {
+      "title": "Cursor RTL",
+      "properties": {
+        "cursorRtl.autoReapply": {
+          "type": "boolean",
+          "default": true,
+          "description": "إعادة تطبيق RTL تلقائياً بعد تحديث Cursor / Auto re-apply RTL patch after Cursor updates"
+        },
+        "cursorRtl.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "إظهار مؤشر RTL في شريط الحالة / Show RTL status in the status bar"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "prepublishOnly": "npm run lint && npm run build",
+    "package": "npm run build && vsce package --no-dependencies",
+    "publish:openvsx": "npm run package && ovsx publish cursor-rtl-*.vsix",
+    "lint": "tsc --noEmit",
+    "test:direction": "node scripts/test-direction.js",
+    "vscode:uninstall": "node dist/uninstall.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.0.0",
+    "esbuild": "^0.25.0",
+    "ovsx": "^0.10.12",
+    "typescript": "^5.5.0"
+  }
+}
